@@ -51,50 +51,6 @@ O arquivo `deploy-sql.yml` está localizado em `.github/workflows/` e possui as 
 2. **Instalação do Cliente PostgreSQL**: Instala o cliente para executar os comandos `psql`.
 3. **Execução dos Scripts SQL**: Executa os arquivos `.sql` do diretório `scripts/` em ordem alfabética.
 
-## Exemplo do Workflow
-
-Aqui está um exemplo do pipeline em funcionamento:
-
-```yaml
-name: Deploy SQL Scripts to RDS
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy-sql:
-    name: Deploy SQL Scripts
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout do repositório
-        uses: actions/checkout@v3
-
-      - name: Instalar cliente PostgreSQL
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client
-
-      - name: Executar Scripts SQL no RDS
-        env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        run: |
-          for script in $(ls scripts/*.sql | sort); do
-            echo "Executando $script..."
-            PGPASSWORD=${DB_PASSWORD} psql \
-              --host=${DB_HOST} \
-              --port=5432 \
-              --username=${DB_USER} \
-              --dbname=${DB_NAME} \
-              --file=$script
-          done
-```
-
 ## Como Adicionar Scripts
 
 1. Crie um arquivo SQL no diretório `scripts/`.
